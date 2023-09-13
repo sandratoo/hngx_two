@@ -38,3 +38,5 @@ Testing the API can be done using tools like Postman. Test each CRUD operation:
 - Fetching details of a person.
 - Modifying the details of an existing person.
 - Removing a person.
+## HOSTING
+Application is hosted at [Render](https://hngx-two-ruxx.onrender.com/api)
