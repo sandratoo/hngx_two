@@ -14,21 +14,21 @@ db = SQLAlchemy(app)
 
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    firstname = db.Column(db.String(50), nullable=False)
-    lastname = db.Column(db.String(50), nullable=False)
-    job = db.Column(db.String(150), nullable=False)
+    name = db.Column(db.String(50), nullable=False)
+    #lastname = db.Column(db.String(50), nullable=False)
+    #job = db.Column(db.String(150), nullable=False)
 
     def __str__(self):
-        return f"Name:{self.firstname}: Job:{self.job}"
+        return f"Name:{self.id}: Job:{self.name}"
         
 
 #Read all People from database
-@app.route("/api/users",methods=["GET"])
+@app.route("/api",methods=["GET"])
 def fetch_all():
     persons = Person.query.all()
     output = []
     for person in persons:
-        data = {"id":person.id,"firstname":person.firstname,"lastname":person.lastname,"job":person.job}
+        data = {"id":person.id,"name":person.name}
         output.append(data)
 
     return jsonify({"persons": output})
@@ -40,23 +40,17 @@ def fetch_person(id):
     if person is None:
         abort(404)
 
-    person_data = {"firstname":person.firstname,"lastname":person.lastname,"job":person.job}
-
-    return jsonify({person.id: person_data})
+    return jsonify({person.id: person.name})
 
 #Create a new person
 @app.route("/api", methods=["POST"])
 def add_person():
-    person = Person(firstname=request.json["firstname"],
-     lastname=request.json["lastname"],
-     job=request.json["job"])
+    person = Person(name=request.json["name"])
 
     db.session.add(person)
     db.session.commit()
 
-    person_data = {"firstname":person.firstname,"lastname":person.lastname,"job":person.job}
-
-    return jsonify({person.id: person_data})
+    return jsonify({person.id: person.name})
 
 #Update an existing person
 @app.route("/api/<id>", methods=["PUT"])
@@ -65,15 +59,11 @@ def update_person(id):
 
     if person is None:
         abort(404)
-    person.firstname=request.json["firstname"]
-    person.lastname=request.json["lastname"]
-    person.job=request.json["job"]
+    person.name=request.json["name"]
         
     db.session.commit()
 
-    person_data = {"firstname":person.firstname,"lastname":person.lastname,"job":person.job}
-
-    return jsonify({person.id: person_data})
+    return jsonify({person.id: person.name})
         
 #Delete a person
 @app.route("/api/<id>", methods=["DELETE"])
